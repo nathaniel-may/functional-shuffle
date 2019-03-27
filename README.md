@@ -5,10 +5,14 @@ This package implements Heinrich Apfelmus’s “merge shuffle” algorithm from
 This version produces a uniform shuffle of the stream with a single traversal.
 
 Usage:
-```
-shuffle(Stream(1,2,3,4,5)).eval(new scala.util.Random(System.nanoTime)).toList
+```scala
+shuffle(Stream(1,2,3,4,5))
+  .eval(new scala.util.Random(System.nanoTime))
+  .toList
 // List(3, 5, 1, 4, 2)
 
-shuffle("Scala!".toStream).eval(new scala.util.Random(System.nanoTime)).mkString
+shuffle("Scala!".toStream)
+  .eval(new scala.util.Random(System.nanoTime))
+  .mkString
 // "aSa!lc"
 ```
