@@ -4,7 +4,7 @@ This package implements Heinrich Apfelmus’s “merge shuffle” algorithm from
 
 This version produces a uniform shuffle of the stream with a single traversal.
 
-Usage:
+###Usage:
 ```scala
 import scala.util.Random
 
