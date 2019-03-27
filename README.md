@@ -6,13 +6,15 @@ This version produces a uniform shuffle of the stream with a single traversal.
 
 Usage:
 ```scala
+import scala.util.Random
+
 shuffle(Stream(1,2,3,4,5))
-  .eval(new scala.util.Random(System.nanoTime))
+  .eval(new Random(System.nanoTime))
   .toList
 // List(3, 5, 1, 4, 2)
 
 shuffle("Scala!".toStream)
-  .eval(new scala.util.Random(System.nanoTime))
+  .eval(new Random(System.nanoTime))
   .mkString
 // "aSa!lc"
 ```
