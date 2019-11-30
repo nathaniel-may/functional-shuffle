@@ -18,13 +18,14 @@ libraryDependencies += "com.github.nathaniel-may" % "functional-shuffle" % "1.0.
 ### Usage:
 ```scala
 import scala.util.Random
+import shuffle.all._
 
-shuffle(Stream(1,2,3,4,5))
+shuffle(LazyList(1,2,3,4,5))
   .eval(new Random(System.nanoTime))
   .toList
 // List(3, 5, 1, 4, 2)
 
-shuffle("Scala!".toStream)
+shuffle("Scala!".iterator.to(LazyList))
   .eval(new Random(System.nanoTime))
   .mkString
 // "aSa!lc"
