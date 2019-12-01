@@ -54,8 +54,8 @@ object FunctionalShuffle {
     *   `scalaz.Id.Id[List[Int]] = List(0, 2, 1, 1, 0)`
     */
   def rng(below: Int): Rand[Int] = for {
-        r <- State.get[Random]
-        i =  if (below <= 0 ) 1 else below // guards against bad input
-        b =  r.nextInt(i) // throws when i <= zero
-      } yield b
+    r <- State.get[Random]
+    i =  if (below <= 0) 1 else below // guards against bad input
+    b =  r.nextInt(i) // throws when i <= zero
+  } yield b
 }
