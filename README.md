@@ -6,12 +6,16 @@ This package implements Heinrich Apfelmus’s “merge shuffle” algorithm from
 
 This version produces a uniform shuffle of a Scala lazy list with a single traversal.
 
+Supports both Scala 2.12 and 2.13.
+
 ### Getting Started
+*note: I am currently having an issue with the publisher (JitPack) and the `%%` sbt syntax is not working. `%` will only pull down 2.13*  
+
 In `build.sbt` add the jitpack resolver and library dependency:
 ```
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.nathaniel-may" % "functional-shuffle" % "1.0.0"
+libraryDependencies += "com.nathanielmay" % "functional-shuffle" % "2.0.0"
 ```
 
 ### Usage:
