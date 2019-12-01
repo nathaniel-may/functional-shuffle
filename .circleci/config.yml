@@ -9,10 +9,12 @@ jobs:
       - checkout
       - restore_cache:
           key: scala-library-dependencies-{{ checksum "build.sbt" }}
-      - run: sbt test:compile
+      - run: sbt clean test:compile
       - save_cache:
           paths: [ "~/.m2", "~/.ivy2", "~/.cache/coursier" ]
           key: scala-library-dependencies-{{ checksum "build.sbt" }}
-      - run: sbt clean coverage test coverageReport
+      - run: sbt "++ 2.13.0" coverage test coverageReport
+      - run: sbt "++ 2.13.1" test #supported version. scoverage has trouble.
+      - run: sbt "++ 2.12.10" coverage test coverageReport
       - codecov/upload:
-          file: /home/circleci/project/target/scala-2.12/scoverage-report/scoverage.xml
+          file: /home/circleci/project/target/scala-2.13/scoverage-report/scoverage.xml

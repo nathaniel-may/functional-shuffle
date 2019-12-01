@@ -1,0 +1,67 @@
+package shuffle
+
+//scalacheck
+import org.scalacheck.Gen.choose
+import org.scalacheck.Prop.forAll
+import org.scalacheck.{Gen, Properties}
+import scalaz.Scalaz._
+import scalaz._
+
+//Scala
+import scala.util.Random
+
+//project
+import shuffle.FunctionalShuffle.shuffle
+
+
+object ShuffleProperties extends Properties("shuffle") {
+
+  property("results in exactly the same elements") = forAll {
+    (s: LazyList[Int], seed: Long) => (for { //frequencyMap(shuffle(s).toList) == frequencyMap(s.toList)
+      rand <- shuffle(s)
+    } yield frequencyMap(rand.toList) == frequencyMap(s.toList))
+    .eval(new Random(seed))
+  }
+
+  property("halves a lazyList") = forAll {
+    s: LazyList[Int] => isHalf(FunctionalShuffle.halve(s))
+  }
+
+  property("riffle maintains exactly the same elements") = forAll {
+    (s1: LazyList[Int], s2: LazyList[Int], seed: Long) =>
+      arePartitions(FunctionalShuffle.riffle((s1, s1.length), (s2, s2.length)).eval(new Random(seed))
+        .foldLeft[List[Int]](List()) { (b, a) => a :: b })(s1.toList, s2.toList)
+  }
+
+  property("rng(below: Int > 0) generates only [0, below)") = forAll(choose(1, Int.MaxValue), choose(Long.MinValue, Long.MaxValue)) {
+    (below: Int, seed: Long) => {
+      val gen = FunctionalShuffle.rng(below).eval(new scala.util.Random(seed)).intValue
+      gen < below && gen >= 0
+    }
+  }
+
+  property("rng(below: Int <= 0) is always zero") = forAll(choose(Int.MinValue, 0), choose(Long.MinValue, Long.MaxValue)) {
+    (below: Int, seed: Long) => FunctionalShuffle.rng(below).eval(new scala.util.Random(seed)).intValue == 0
+  }
+
+  property("riffling two single item lists isn't always the same") = forAll {
+    seed: Long => List.fill(10)(FunctionalShuffle.riffle((LazyList("A"), 1), (LazyList("B"), 1)))
+      .sequence
+      .map { _.map { _.head } }
+      .map(frequencyMap)
+      .map { !_.values.exists(_ == 0) }
+      .eval(new scala.util.Random(seed)).booleanValue
+  }
+
+  def arePartitions[T](full: List[T])(ls: List[T]*): Boolean =
+    frequencyMap(full) == frequencyMap(ls.toList.flatten)
+
+  def frequencyMap[T](l: List[T]): Map[T, Int] =
+    l.foldLeft[Map[T, Int]](Map()) { (m, t) => m.updated(t, m.getOrElse(t, 0) + 1) }
+
+  def isHalf[T](ss: (LazyList[T], LazyList[T])): Boolean = ss match {
+    case (s1, s2) => (s1.size - s2.size) == 1 ||
+                     (s1.size - s2.size) == 0
+  }
+
+}
